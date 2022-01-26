@@ -216,6 +216,22 @@ def selected_value_to_singer_value_impl(elem, og_sql_datatype, conn_info):
     if sql_datatype == 'money':
         return elem
 
+    if sql_datatype == 'interval':
+        if elem == "1 day":
+            return 86400
+
+        # less flexible than a regex system or a proper parser, but good enough for schedules we use
+        try:
+            parsed = datetime.datetime.strptime(elem, '%d days %H:%M:%S')
+            return parsed.second + parsed.minute*60 + parsed.hour*3600 + parsed.day*86400
+        except:
+            try:
+                parsed = datetime.datetime.strptime(elem, '%d days')
+                return parsed.day*86400
+            except:
+                parsed = datetime.datetime.strptime(elem, '%H:%M:%S')
+                return parsed.second + parsed.minute*60 + parsed.hour*3600
+
     if sql_datatype in ['json', 'jsonb']:
         return json.loads(elem)
 

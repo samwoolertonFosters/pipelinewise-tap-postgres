@@ -76,6 +76,8 @@ def prepare_columns_for_select_sql(c, md_map):
                    f'OR {column_name} > \'9999-12-31 23:59:59.999\' THEN \'9999-12-31 23:59:59.999\' ' \
                    f'ELSE {column_name} ' \
                    f'END AS {column_name}'
+        elif sql_datatype == "interval":
+            return f"EXTRACT('epoch' from {column_name}) as {column_name}"
     return column_name
 
 def prepare_columns_sql(c):

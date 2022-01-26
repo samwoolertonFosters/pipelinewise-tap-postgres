@@ -231,6 +231,9 @@ def schema_for_column_datatype(col):
         schema['type'] = nullable_columns(['object', 'array'], col.is_primary_key)
         return schema
 
+    if data_type == 'interval':
+        schema['type'] = nullable_column('number', col.is_primary_key)
+        return schema
     if data_type == 'numeric':
         schema['type'] = nullable_column('number', col.is_primary_key)
         scale = post_db.numeric_scale(col)
